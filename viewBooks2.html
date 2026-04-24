@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Management System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div>
+    <h1>Library Management System</h1>
+  </div>
+
+  <div>
+    <h2 id="categoryName"></h2>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>ISBN</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="script.js"></script>
+  <script>
+    window.onload = function () {
+      let category = localStorage.getItem("category")
+      document.getElementById("categoryName").innerText = category.toLocaleUpperCase()+"  BOOKS ";
+      db.ref("books").once("value", function (snapshot) {
+        let tableBody = document.getElementById("tableBody")
+        tableBody.innerHTML = ""
+        snapshot.forEach(function (child) {
+          let book = child.val()
+          if (book.category.toLowerCase() === category) {
+            let row = `
+              <tr>
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.isbn}</td>
+                <td>${book.qty}</td>
+              </tr>
+            `
+            tableBody.innerHTML += row
+          }
+        })
+        if(tableBody.innerHTML===""){
+          alert("There Is Not Available "+category.toUpperCase()+ " BOOKS")
+        }
+      })
+    }
+  </script>
+
+</body>
+
+</html>
